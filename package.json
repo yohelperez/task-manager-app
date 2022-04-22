@@ -20,6 +20,7 @@
   "homepage": "https://github.com/yohelperez/task-manager-app#readme",
   "dependencies": {
     "express": "^4.17.3",
+    "mongoose": "^6.3.1",
     "morgan": "^1.10.0"
   },
   "devDependencies": {

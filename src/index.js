@@ -4,6 +4,8 @@ const app = express();
 const morgan = require('morgan'); //module to see in console al requests made by the browser or client apps
 const path = require('path');
 
+const {mongoose} = require('./database');
+
 //Settings (settings when the server is deployed in any cloud service)
 app.set('port', process.env.PORT || 3000); //this makes it use the port set by the OS or 3000 by default
 
