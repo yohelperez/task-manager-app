@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     res.json(tasks);
 });
 
-/**get one task only by using its id */
+/**get one task only by using its id  */
 router.get('/:id', async(req, res) =>{
     const task = await Task.findById(req.params.id);
     res.json(task);
