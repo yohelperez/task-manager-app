@@ -6,7 +6,8 @@ class App extends Component{
         //when the app starts all fields are blank
         this.state={
             title:'',
-            description: ''
+            description: '',
+            tasks: []
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -28,6 +29,7 @@ class App extends Component{
             console.log(data)
             M.toast({html: 'Task Saved'})   //Materialize global variable to show text in the frontend
             this.setState({title:'', description:''});  //clears the form
+            this.fetchTasks();
         })
         .catch(err => console.error(err));
         e.preventDefault(); //avoids refreshing the website everytime the submit button is pressed
@@ -45,8 +47,28 @@ class App extends Component{
     fetchTasks(){
         fetch('/api/tasks')
             .then(res =>res.json())
-            .then(data => console.log(data));
+            .then(data => {
+                this.setState({tasks: data});
+                console.log(this.state.tasks);
+            });
 
+    }
+
+    deleteTask(id){
+        if(confirm('Are you sure you want to delete it?')){
+            fetch(`/api/tasks/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res=> res.json())
+            .then(data => { 
+                M.toast({html:'Task Deleted'})
+                this.fetchTasks();
+            })
+        }
     }
 
     /** Gets tasks name and value from the filled form when save button is clicked */
@@ -98,6 +120,36 @@ class App extends Component{
 
                         </div>
                         <div className='col s7'>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        this.state.tasks.map(task =>{
+                                            return(
+                                                <tr key={task._id}>
+                                                    <td>{task.title}</td>
+                                                    <td>{task.description}</td>
+                                                    <td>
+                                                        <button className='btn light-blue darken-4' onClick={() => this.deleteTask(task._id)}>
+                                                            {/*by using class name material-icons and adding the name for the element i it adds the icon*/}
+                                                            <i className='material-icons'>delete</i>
+                                                        </button>
+                                                        <button className='btn light-blue darken-4' style={{margin:'4px'}}>
+                                                            <i className='material-icons'>edit</i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+
+                                </tbody>
+                            </table>
 
                         </div>
 
