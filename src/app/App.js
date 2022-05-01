@@ -7,7 +7,8 @@ class App extends Component{
         this.state={
             title:'',
             description: '',
-            tasks: []
+            tasks: [],
+            _id: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -16,22 +17,41 @@ class App extends Component{
 
     /**Adds tasks using post */
     addTask(e){
-        fetch('/api/tasks', {
-            method: 'POST',
-            body: JSON.stringify(this.state),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(res =>res.json())
-        .then(data => {
-            console.log(data)
-            M.toast({html: 'Task Saved'})   //Materialize global variable to show text in the frontend
-            this.setState({title:'', description:''});  //clears the form
-            this.fetchTasks();
-        })
-        .catch(err => console.error(err));
+        if(this.state._id){
+            fetch(`./api/tasks/${this.state._id}`, {
+                method: 'PUT',
+                body: JSON.stringify(this.state),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+                M.toast({html: 'Task Updated'});
+                this.setState({title: '', description: '', _id: ''});
+                this.fetchTasks();
+            });
+
+        }else{
+            fetch('/api/tasks', {
+                method: 'POST',
+                body: JSON.stringify(this.state),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res =>res.json())
+            .then(data => {
+                console.log(data)
+                M.toast({html: 'Task Saved'})   //Materialize global variable to show text in the frontend
+                this.setState({title:'', description:''});  //clears the form
+                this.fetchTasks();
+            })
+            .catch(err => console.error(err));
+        }
         e.preventDefault(); //avoids refreshing the website everytime the submit button is pressed
 
     }
@@ -69,6 +89,18 @@ class App extends Component{
                 this.fetchTasks();
             })
         }
+    }
+
+    editTask(id){
+        fetch(`/api/tasks/${id}`)
+            .then(res => res.json())
+            .then(data => {
+                this.setState({
+                    title: data.title,
+                    description: data.description,
+                    _id: data._id
+                })
+            });
     }
 
     /** Gets tasks name and value from the filled form when save button is clicked */
@@ -139,7 +171,7 @@ class App extends Component{
                                                             {/*by using class name material-icons and adding the name for the element i it adds the icon*/}
                                                             <i className='material-icons'>delete</i>
                                                         </button>
-                                                        <button className='btn light-blue darken-4' style={{margin:'4px'}}>
+                                                        <button onClick={() => this.editTask(task._id)} className='btn light-blue darken-4' style={{margin:'4px'}} >
                                                             <i className='material-icons'>edit</i>
                                                         </button>
                                                     </td>
