@@ -15,7 +15,7 @@ class App extends Component{
         this.addTask = this.addTask.bind(this);
     }
 
-    /**Adds tasks using post */
+    /**Adds and edits existing tasks */
     addTask(e){
         if(this.state._id){
             fetch(`./api/tasks/${this.state._id}`, {
@@ -28,7 +28,6 @@ class App extends Component{
             })
             .then(res => res.json())
             .then(data => {
-                console.log(data)
                 M.toast({html: 'Task Updated'});
                 this.setState({title: '', description: '', _id: ''});
                 this.fetchTasks();
@@ -68,12 +67,12 @@ class App extends Component{
         fetch('/api/tasks')
             .then(res =>res.json())
             .then(data => {
-                this.setState({tasks: data});
-                console.log(this.state.tasks);
+                this.setState({tasks: data})
             });
 
     }
 
+    /** Deletes the task using its id */
     deleteTask(id){
         if(confirm('Are you sure you want to delete it?')){
             fetch(`/api/tasks/${id}`, {
@@ -91,6 +90,7 @@ class App extends Component{
         }
     }
 
+    /**Gets the task with its id and fills the form with is currently information */
     editTask(id){
         fetch(`/api/tasks/${id}`)
             .then(res => res.json())
