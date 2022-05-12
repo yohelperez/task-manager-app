@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const URI= 'mongodb://localhost/tasks-app';
+const URI= 'mongodb+srv://yohelperez:yohelperez98@cluster0.01l9s.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 
 mongoose.connect(URI)
 .then(db => console.log('DB is connected'))
